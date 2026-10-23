@@ -55,3 +55,9 @@ npm test
 第十二关去程为「羽毛 → 小鱼 → 老鼠 → 羽毛 → 小鱼」，返程严格为同一路线反向「小鱼 → 羽毛 → 老鼠 → 小鱼 → 羽毛」。路线在开始前显示，输入时显示已匹配进度。错误只重置本段；返程不会被重置到去程。
 
 夜间巡视（第十三关）增加了三处水杯地块。进入水杯地块会碰倒水杯，暴露风险（共用人类嫌疑指标）增加 15%，达到 100% 淘汰。重复点击当前地块不重复处罚，重置路线不会清除风险；正常通关路线可完全避开水杯。
+
+## 自定义域名部署
+
+站点域名：`www.areyouacat.com`。在域名服务商添加 CNAME 记录，主机名 `www`，目标 `evan-s17.github.io`（不要填写 URL 或仓库路径）。在 GitHub 仓库 Settings → Pages 确认 Custom domain 为 `www.areyouacat.com`，DNS 检查和证书签发完成后启用 Enforce HTTPS。
+
+使用 `npm run build` 构建，部署 `dist/` 到 `gh-pages` 分支。不要再追加 `--base=/Are-you-a-cat-/`；独立域名使用根路径 `/`。Vite 会将 `public/CNAME` 与 `public/.nojekyll` 复制到发布目录，每次发布都应保留这两个文件。
