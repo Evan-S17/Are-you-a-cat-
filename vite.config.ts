@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
 
-// Free GitHub Pages project hosting; no purchased domain is required.
-export default defineConfig({ base: '/Are-you-a-cat-/' });
+// GitHub Pages uses a subpath; Cloudflare serves the game at the site root.
+export default defineConfig(({ mode }) => ({
+  base: mode === 'cloudflare' ? '/' : '/Are-you-a-cat-/',
+}));

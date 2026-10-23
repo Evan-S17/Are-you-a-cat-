@@ -63,3 +63,15 @@ npm test
 运行 `npm run build`，将 `dist/` 部署到 `gh-pages` 分支根目录。Vite 已配置资源前缀 `/Are-you-a-cat-/`。保留 `public/.nojekyll`，不要加入 CNAME 文件。
 
 仓库 Settings → Pages 应使用 Deploy from a branch → gh-pages → / (root)。Custom domain 应留空；如果仍显示旧域名，请点击 Remove 后保存。
+
+## Cloudflare Workers 静态资源部署
+
+项目已包含 `wrangler.jsonc`，不需要单独编写 Worker 后端。现有 Cloudflare 项目名为 `are-you-a-cat`。
+
+- Build command：`npm run build:cloudflare`（已有 `npm run build` 也可工作，部署阶段会按配置重新构建正确版本）。
+- Deploy command：`npx wrangler deploy`。
+- Root directory：仓库根目录。
+
+Wrangler 会运行 `npm run build:cloudflare` 并发布 `dist/`；Cloudflare 构建使用根资源路径 `/`，普通构建仍适配 GitHub Pages。
+
+如控制台提示 `Cannot retry a build that was created with a seed_repo override`，不要重试该初始化记录；使用连接仓库上的新提交触发正常构建。部署后在 Cloudflare 项目的 Domains 中查看或启用免费 workers.dev 地址。地址前缀由 Cloudflare 配置决定，不能从 GitHub 用户名推断。
