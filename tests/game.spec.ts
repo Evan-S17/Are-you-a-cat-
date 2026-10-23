@@ -4,7 +4,7 @@ test('five levels, wrong-answer feedback, hints, and certificate',async({page})=
 await page.goto('/');await page.getByRole('button',{name:'我不是人类'}).click();
 await page.getByRole('button',{name:/豪华云朵猫窝/}).click();await expect(page.getByText('你选择了符合人体工程学的昂贵猫窝。人类嫌疑 +15%。',{exact:true}).first()).toBeVisible();
 await page.getByRole('button',{name:/一个普通的纸箱/}).click();await page.getByRole('button',{name:'下一项'}).click();
-await drag(page,'拖动玻璃杯',110,80);await page.getByRole('button',{name:'下一项'}).click();
+const cup=page.getByRole('button',{name:'拖动玻璃杯',exact:true});const cb=await cup.boundingBox();const room=await page.getByRole('img',{name:'可互动桌面场景'}).boundingBox();if(!cb||!room)throw Error('Missing desk');await page.mouse.move(cb.x+cb.width/2,cb.y+cb.height/2);await page.mouse.down();await page.mouse.move(cb.x+cb.width/2,room.y+room.height*.88,{steps:12});await page.mouse.up();await page.getByRole('button',{name:'下一项'}).click();
 for(const key of ['Q','W','E'])await page.getByRole('button',{name:key,exact:true}).click();await page.getByRole('button',{name:'在键盘上坐下'}).click();await page.getByRole('button',{name:'下一项'}).click();
 await page.getByRole('button',{name:'喵，开门。',exact:true}).click();await page.getByRole('button',{name:'留在原地'}).click();await page.getByRole('button',{name:'喵，再开一次。'}).click();await page.getByRole('button',{name:'下一项'}).click();
 await drag(page,'请勿点击此按钮',0,90);await page.getByRole('button',{name:'领取证明'}).click();await expect(page.getByRole('heading',{name:'猫类身份认证书'})).toBeVisible();await expect(page.getByText('已排除 ✓')).toBeVisible();await page.screenshot({path:`test-results/certificate-${test.info().project.name}.png`,fullPage:true});
@@ -16,3 +16,18 @@ for(let i=0;i<3;i++)await page.getByRole('button',{name:'拨动进度条线头'}
 expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
 });
 test('initial appearance and first level',async({page})=>{await page.goto('/');await page.getByRole('button',{name:'我不是人类'}).click();await page.screenshot({path:`test-results/game-${test.info().project.name}.png`,fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy()});
+test('custom name, PNG download, real keyboard and elimination',async({page})=>{
+ await page.goto('/');await page.getByLabel('你的猫名').fill('小鱼干 <猫>');await page.getByRole('button',{name:'我不是人类'}).click();
+ await page.evaluate(()=>localStorage.setItem('cat-level','2'));await page.reload();
+ await expect(page.getByRole('heading',{name:'协助办公'})).toBeVisible();await page.keyboard.type('cat',{delay:60});await expect(page.locator('.document p')).toContainText('c喵a喵t喵');await page.getByRole('button',{name:'在键盘上坐下'}).click();
+ await page.evaluate(()=>localStorage.setItem('cat-level','4'));await page.reload();for(let i=0;i<3;i++)await page.getByRole('button',{name:'拨动进度条线头'}).click();
+ await expect(page.locator('.certificate-player')).toHaveText('小鱼干 <猫>');
+ const downloaded=page.waitForEvent('download');await page.getByRole('button',{name:'保存证书图片'}).click();const file=await downloaded;expect(file.suggestedFilename()).toMatch(/\.png$/);const stream=await file.createReadStream();const buffers=[];for await(const chunk of stream!)buffers.push(chunk);const data=Buffer.concat(buffers);expect(data.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');expect(data.readUInt32BE(16)).toBe(1200);expect(data.readUInt32BE(20)).toBe(1500);
+ await page.getByRole('button',{name:'再当一次猫'}).click();await page.getByRole('button',{name:'我不是人类'}).click();for(let i=0;i<7;i++)await page.getByRole('button',{name:/豪华云朵猫窝/}).click();await expect(page.getByRole('heading',{name:'检测到人类行为'})).toBeVisible();await expect(page.getByRole('meter',{name:'人类嫌疑'})).toHaveAttribute('aria-valuenow','100');await page.reload();await expect(page.getByRole('heading',{name:'检测到人类行为'})).toBeVisible();await expect(page.getByRole('button',{name:'拨动进度条线头'})).toBeDisabled();await page.getByRole('button',{name:'重新验证',exact:true}).first().click();await expect(page.getByRole('button',{name:'我不是人类'})).toBeVisible();
+});
+test('every desk object is movable; only floor release passes',async({page})=>{
+ await page.goto('/');await page.evaluate(()=>{localStorage.setItem('cat-started','yes');localStorage.setItem('cat-level','1')});await page.reload();
+ for(const name of ['笔记本电脑','书本','玻璃杯','手机','钢笔']){const item=page.getByRole('button',{name:'拖动'+name,exact:true});const b=await item.boundingBox();if(!b)throw Error('No object');await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2+8,b.y+b.height/2+8,{steps:3});await page.mouse.up();await expect(page.getByRole('button',{name:'下一项'})).toHaveCount(0)}
+ const cup=page.getByRole('button',{name:'拖动玻璃杯',exact:true});await cup.focus();for(let i=0;i<6;i++)await page.keyboard.press('ArrowDown');await page.keyboard.press('Enter');await expect(page.getByRole('button',{name:'下一项'})).toBeVisible();
+ await page.screenshot({path:`test-results/desk-${test.info().project.name}.png`,fullPage:true});
+});
