@@ -7,3 +7,5 @@
 .laser-device{bottom:88px;min-width:120px;position:absolute;padding-bottom:19px;overflow:hidden}.laser-device small{display:block;font-size:8px;margin-top:4px;color:#71839a}.laser-hold-progress{position:absolute;bottom:0;left:0;right:0;height:5px;background:#bdc7d2}.laser-hold-progress i{display:block;height:100%;background:#688b74}.laser-report{position:absolute;bottom:47px;right:22px;border:0;background:none;color:#8b8175;text-decoration:underline;text-underline-offset:4px;font-size:10px;padding:7px 0}.laser-report:disabled{opacity:.5;cursor:default}.laser-scene .advanced-note{bottom:14px;font-size:9px}.laser-dot{touch-action:manipulation}
 
 .laser-dot{width:44px;height:44px}.laser-dot:after{inset:18px}
+
+.ownership-return{position:absolute;top:39%;left:50%;transform:translateX(-50%);white-space:nowrap;padding:8px 12px;font:inherit;font-size:10px;color:#8e806e;background:#faf8f3;border:1px solid #d7cbb9;border-radius:5px}.ownership-return:hover:not(:disabled){border-color:#ae9676;color:#72614b}.ownership-return:disabled{opacity:.45;cursor:default}
