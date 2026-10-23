@@ -56,8 +56,10 @@ npm test
 
 夜间巡视（第十三关）增加了三处水杯地块。进入水杯地块会碰倒水杯，暴露风险（共用人类嫌疑指标）增加 15%，达到 100% 淘汰。重复点击当前地块不重复处罚，重置路线不会清除风险；正常通关路线可完全避开水杯。
 
-## 自定义域名部署
+## 免费部署
 
-站点域名：`www.areyouacat.com`。在域名服务商添加 CNAME 记录，主机名 `www`，目标 `evan-s17.github.io`（不要填写 URL 或仓库路径）。在 GitHub 仓库 Settings → Pages 确认 Custom domain 为 `www.areyouacat.com`，DNS 检查和证书签发完成后启用 Enforce HTTPS。
+游戏使用免费的 GitHub Pages 项目地址：https://evan-s17.github.io/Are-you-a-cat-/ 。无需购买域名或服务器。
 
-使用 `npm run build` 构建，部署 `dist/` 到 `gh-pages` 分支。不要再追加 `--base=/Are-you-a-cat-/`；独立域名使用根路径 `/`。Vite 会将 `public/CNAME` 与 `public/.nojekyll` 复制到发布目录，每次发布都应保留这两个文件。
+运行 `npm run build`，将 `dist/` 部署到 `gh-pages` 分支根目录。Vite 已配置资源前缀 `/Are-you-a-cat-/`。保留 `public/.nojekyll`，不要加入 CNAME 文件。
+
+仓库 Settings → Pages 应使用 Deploy from a branch → gh-pages → / (root)。Custom domain 应留空；如果仍显示旧域名，请点击 Remove 后保存。
